@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes bassGlow {
+  0% {
+    transform: translateX(-50%) translateY(-50%) scaleX(0.5) scaleY(0.4);
+    opacity: 0.95;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50%) scaleX(1.6) scaleY(3.5);
+    opacity: 0;
+  }
+}

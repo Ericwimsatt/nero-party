@@ -1,11 +1,20 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { LoginScreen } from "./components/Login/LoginScreen";
+import { LobbyScreen } from "./components/Lobby/LobbyScreen";
+import { PartyScreen } from "./components/Party/PartyScreen";
+import { AwardsScreen } from "./components/Results/AwardsScreen";
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900">Nero Party</h1>
-        <p className="mt-2 text-gray-600">Start building here.</p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/lobby" element={<LobbyScreen />} />
+        <Route path="/party/:partyId" element={<PartyScreen />} />
+        <Route path="/results" element={<AwardsScreen />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

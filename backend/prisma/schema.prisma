@@ -7,4 +7,85 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-// Design your schema here
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  createdAt DateTime @default(now())
+
+  hostedParties Party[]     @relation("host")
+  memberships   UserParty[]
+  votes         Vote[]
+  ratings       Rating[]
+  addedSongs    QueueItem[]
+}
+
+model Party {
+  id            String   @id @default(cuid())
+  name          String
+  endsAt        DateTime
+  hostId        String
+  currentSongId String?
+  createdAt     DateTime @default(now())
+
+  host    User        @relation("host", fields: [hostId], references: [id])
+  members UserParty[]
+  queue   QueueItem[]
+  ratings Rating[]
+}
+
+model UserParty {
+  userId  String
+  partyId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  party Party @relation(fields: [partyId], references: [id])
+
+  @@id([userId, partyId])
+}
+
+model QueueItem {
+  id         String    @id @default(cuid())
+  partyId    String
+  jamendoId  String
+  name       String
+  artist     String
+  albumImage String?
+  audioUrl   String
+  duration   Int?
+  addedById  String
+  addedAt    DateTime  @default(now())
+  playedAt   DateTime?
+
+  party   Party    @relation(fields: [partyId], references: [id])
+  addedBy User     @relation(fields: [addedById], references: [id])
+  votes   Vote[]
+  ratings Rating[]
+}
+
+model Vote {
+  userId      String
+  queueItemId String
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  queueItem QueueItem @relation(fields: [queueItemId], references: [id])
+
+  @@id([userId, queueItemId])
+}
+
+model Rating {
+  id          String   @id @default(cuid())
+  userId      String
+  queueItemId String
+  partyId     String
+  value       Float
+  timestamps  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  queueItem QueueItem @relation(fields: [queueItemId], references: [id])
+  party     Party     @relation(fields: [partyId], references: [id])
+
+  @@unique([userId, queueItemId])
+}
